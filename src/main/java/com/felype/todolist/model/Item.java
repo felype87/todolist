@@ -31,6 +31,8 @@ public class Item {
 	private Long id;
 
 	@NotEmpty
-	private String text;
+	private String title;
+
+	private String description;
 
 }

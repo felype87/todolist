@@ -153,10 +153,52 @@ public class ToDoListResourceTest {
 	}
 
 	@Test
-	public void testDeteleUnexpectedException() {
+	public void testDeteleItemUnexpectedException() {
 		when(toDoListService.deleteItem(any())).thenThrow(RuntimeException.class);
 
 		webTestClient.delete().uri("/items/{item_id}", 1L)
+				.exchange()
+				.expectStatus().is5xxServerError();
+	}
+
+	@Test
+	public void testPutItem() {
+		Item item = MockObjects.item();
+
+		when(toDoListService.updateItem(any())).thenReturn(Mono.just(item));
+
+		webTestClient.put().uri("/items/{item_id}", item.getId())
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)
+				.bodyValue(item)
+				.exchange()
+				.expectStatus().isAccepted()
+				.expectHeader().contentType(MediaType.APPLICATION_JSON)
+				.expectBody(Item.class).isEqualTo(item);
+	}
+
+	@Test
+	public void testPutItemInvalidRequest() {
+		Item item = MockObjects.item();
+
+		webTestClient.put().uri("/items/{item_id}", 2L)
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)
+				.bodyValue(item)
+				.exchange()
+				.expectStatus().isBadRequest();
+	}
+
+	@Test
+	public void testPutItemUnexpectedException() {
+		when(toDoListService.updateItem(any())).thenThrow(RuntimeException.class);
+		
+		Item item = MockObjects.item();
+
+		webTestClient.put().uri("/items/{item_id}", item.getId())
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)
+				.bodyValue(item)
 				.exchange()
 				.expectStatus().is5xxServerError();
 	}

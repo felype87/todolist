@@ -46,7 +46,7 @@ public class ToDoListServiceTest {
 	}
 
 	@Test
-	public void testAddInvalidItemTextEmpty() {
+	public void testAddInvalidItemTitleEmpty() {
 		when(itemRepository.save(any())).thenThrow(new ConstraintViolationException(null));
 
 		StepVerifier.create(toDoListService.addItem(MockObjects.invalidItem()))
@@ -118,6 +118,31 @@ public class ToDoListServiceTest {
 		Mockito.doThrow(RuntimeException.class).when(itemRepository).deleteById(any());
 
 		StepVerifier.create(toDoListService.deleteItem(1L)).expectError(BackendServiceException.class).verify();
+	}
+	
+	@Test
+	public void testUpdateItem() {
+		Item item = MockObjects.item();
+
+		when(itemRepository.save(any())).thenReturn(item);
+
+		StepVerifier.create(toDoListService.updateItem(item)).expectNext(item).verifyComplete();
+	}
+
+	@Test
+	public void testUpdateInvalidItemTitleEmpty() {
+		when(itemRepository.save(any())).thenThrow(new ConstraintViolationException(null));
+
+		StepVerifier.create(toDoListService.updateItem(MockObjects.invalidItem()))
+				.expectError(BackendServiceException.class).verify();
+	}
+
+	@Test
+	public void testUpdateItemUnexpectedError() {
+		when(itemRepository.save(any())).thenThrow(RuntimeException.class);
+
+		StepVerifier.create(toDoListService.updateItem(MockObjects.item())).expectError(BackendServiceException.class)
+				.verify();
 	}
 
 }

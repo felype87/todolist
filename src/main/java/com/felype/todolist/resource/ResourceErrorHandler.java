@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.felype.todolist.exception.BackendServiceException;
+import com.felype.todolist.exception.InvalidRequestException;
 import com.felype.todolist.exception.ItemNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,14 @@ public class ResourceErrorHandler {
 		log.error("Unexpected Error", backendServiceException.getCause());
 
 		return new ResponseEntity<Object>(new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	@ExceptionHandler(InvalidRequestException.class)
+	public ResponseEntity<Object> handleInvalidRequestException(InvalidRequestException invalidRequestException) {
+		// Don't expose implementation details when failing.
+		log.info(invalidRequestException.getMessage());
+
+		return new ResponseEntity<Object>(new HttpHeaders(), HttpStatus.BAD_REQUEST);
 	}
 
 }

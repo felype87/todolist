@@ -11,7 +11,7 @@ import lombok.experimental.UtilityClass;
 public class MockObjects {
 
 	public Item item(Long id) {
-		return Item.builder().id(id).text("text").build();
+		return Item.builder().id(id).title("title").build();
 	}
 
 	public Item item() {
@@ -19,7 +19,7 @@ public class MockObjects {
 	}
 
 	public Item invalidItem() {
-		return Item.builder().text("").build();
+		return Item.builder().title("").build();
 	}
 
 	public List itemList() {

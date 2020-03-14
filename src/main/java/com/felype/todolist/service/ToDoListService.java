@@ -32,6 +32,16 @@ public class ToDoListService {
 			return savedItem;
 		}).onErrorMap(handleErrors());
 	}
+	
+	public Mono<Item> updateItem(Item item) {
+		return Mono.fromCallable(() -> {
+			Item savedItem = itemRepository.save(item);
+
+			log.info("Item saved. ID: {}", savedItem.getId());
+
+			return savedItem;
+		}).onErrorMap(handleErrors());
+	}
 
 	public Mono<List> getItems() {
 		return Mono.fromCallable(() -> {
