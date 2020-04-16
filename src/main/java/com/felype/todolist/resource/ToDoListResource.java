@@ -28,7 +28,7 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:3000"})
 public class ToDoListResource {
 
 	private final ToDoListService toDoListService;
@@ -39,14 +39,14 @@ public class ToDoListResource {
 		return toDoListService.getItems();
 	}
 
-	@GetMapping(value = "/items/{item_id}")
-	public Mono<Item> getItem(@PathVariable("item_id") Long itemId) {
+	@GetMapping(value = "/items/{itemId}")
+	public Mono<Item> getItem(@PathVariable("itemId") Long itemId) {
 		return toDoListService.getItem(itemId);
 	}
 
-	@DeleteMapping(value = "/items/{item_id}")
+	@DeleteMapping(value = "/items/{itemId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public Mono<Void> deleteItem(@PathVariable("item_id") Long itemId) {
+	public Mono<Void> deleteItem(@PathVariable("itemId") Long itemId) {
 		return toDoListService.deleteItem(itemId);
 	}
 
@@ -56,9 +56,9 @@ public class ToDoListResource {
 		return toDoListService.addItem(item);
 	}
 	
-	@PutMapping(value = "/items/{item_id}")
+	@PutMapping(value = "/items/{itemId}")
 	@ResponseStatus(HttpStatus.ACCEPTED)
-	public Mono<Item> putItem(@RequestBody @Valid Item item, @PathVariable("item_id") Long itemId) {
+	public Mono<Item> putItem(@RequestBody @Valid Item item, @PathVariable("itemId") Long itemId) {
 		if(!Objects.equals(item.getId(), itemId)) {
 			throw new InvalidRequestException("Item ID is invalid. Call post to create new item.");
 		}
